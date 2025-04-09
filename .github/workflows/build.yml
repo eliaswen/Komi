@@ -2,10 +2,8 @@ name: Build
 
 on:
   workflow_dispatch:
-#  push:
-#    branches: [ "master" ]
-#  pull_request:
-#    branches: [ "master" ]
+  push:
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -25,4 +23,14 @@ jobs:
         run: cmake --preset=vcpkg ${{ github.workspace }}\src
       - name: Build with CMake
         run: cmake --build ${{ github.workspace }}\src\build
+      - name: Upload Server Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Server
+          path: ${{ github.workspace }}\src\build\Debug\KomiServer.exe
+      - name: Upload Client Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Client
+          path: ${{ github.workspace }}\src\build\Debug\KomiClient.exe      
 
