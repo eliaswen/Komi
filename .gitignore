@@ -1,4 +1,7 @@
+# CMake/vcpkg data
 src/CMakeUserPresets.json
 src/build
-.vscode
 src/vcpkg_installed
+
+# VSCode data
+.vscode
