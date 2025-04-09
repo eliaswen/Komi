@@ -22,5 +22,5 @@ jobs:
         uses: lukka/run-cmake@v10.8
         with:
           cmakeListsTxtPath: '${{ github.workspace }}\src\CMakeLists.txt'
-          configurePreset: 'ninja-multi-vcpkg'
+          configurePreset: 'vcpkg'
 
