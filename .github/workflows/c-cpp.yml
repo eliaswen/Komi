@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Build 
 
 on:
   push:
@@ -18,4 +18,6 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}\src\vcpkg
       - name: Run CMake
         uses: lukka/run-cmake@v10.8
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}\src\CMakeLists.txt'
 
