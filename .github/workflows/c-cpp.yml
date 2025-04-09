@@ -23,4 +23,5 @@ jobs:
         with:
           cmakeListsTxtPath: '${{ github.workspace }}\src\CMakeLists.txt'
           configurePreset: 'vcpkg'
+          buildPreset: 'vcpkg'
 
