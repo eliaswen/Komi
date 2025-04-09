@@ -1,0 +1,4 @@
+src/CMakeUserPresets.json
+src/build
+.vscode
+src/vcpkg_installed
