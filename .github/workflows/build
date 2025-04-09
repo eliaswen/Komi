@@ -13,15 +13,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
-      - name: Setup with VCPKG
+      - name: Setup VCPKG
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: ${{ github.workspace }}\src\vcpkg
           runVcpkgInstall: true
-      - name: Run CMake
-        uses: lukka/run-cmake@v10.8
-        with:
-          cmakeListsTxtPath: '${{ github.workspace }}\src\CMakeLists.txt'
-          configurePreset: 'vcpkg'
-          buildPreset: 'vcpkg'
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+      - name: Init with CMake
+        run: cmake --preset=vcpkg ${{ github.workspace }}\src
+      - name: Build with CMake
+        run: cmake --build build
 
