@@ -8,6 +8,7 @@
 #include <thread>
 #include <random>
 #include <chrono>
+#include <re2/re2.h>
 
 namespace beast = boost::beast;         // From <boost/beast.hpp>
 namespace http = beast::http;          // From <boost/beast/http.hpp>
@@ -130,21 +131,72 @@ void session(tcp::socket socket) {
     }
 }
 
-// CLI interface, for now only listing clients
+// CLI interface
 void cli_interface() {
     while (true) {
         std::string command;
         std::getline(std::cin, command);
-        if (command == "clients list") {
-            std::lock_guard<std::mutex> lock(clients_mutex);
-            for (const auto& client : clients) {
-                std::cout << "ID: " << client.first << ", IP: " << client.second.first << "\n";
+
+        // clients command
+
+        if (re2::RE2::FullMatch(command, "clients(?:\\s\\S*)?")) { // Match clients command using re2
+            std::string action;
+            if (re2::RE2::FullMatch(command, "clients\\s([a-zA-Z]*)", &action)) { // Match 'clients <action>' command using re2
+                std::lock_guard<std::mutex> lock(clients_mutex); // Lock the clients map
+                if (action == "list") {
+                    std::cout << "Active clients:\n";
+                    for (const auto& client : clients) {
+                        std::cout << "ID: " << client.first << ", IP: " << client.second.first << "\n"; }
+                } else {
+                    std::cout << "Unknown action: " << action << "\nType 'help clients' for usage\n"; // Handle unknown action
+                }
+            // Match errors
+            } else if (re2::RE2::FullMatch(command, "clients")) {
+                std::cout << "Missing action\nType 'help clients' for usage\n"; // Handle missing action
+            } else {
+                std::cout << "Unknown error, please report the issue. Type 'help issue' for information.\nType 'help clients' for usage\n"; // Handle unknown error in command parsing
             }
-        } else {
-            std::cout << "Unknown command\n";
+
+        // client command
+
+        } else if (re2::RE2::FullMatch(command, "client(?:\\s\\S*)?")) { // Match client command using re2
+            std::string id, action;
+            if (re2::RE2::FullMatch(command, "client\\s([a-zA-Z0-9]{8})\\s([a-zA-Z]*)", &id, &action)) { // Match 'client <id> <action>' command using re2
+                std::lock_guard<std::mutex> lock(clients_mutex); // Lock the clients map
+                auto idPointer = clients.find(id);
+                if (idPointer != clients.end()) { // If the ID exists, continue to parse command
+                    if (action == "remove") { // Match 'client <id> remove' command using re2
+                        clients.erase(idPointer); // Remove the client from the map
+                        std::cout << "Client with ID " << id << " removed\n";
+            // Handle issues IMPORTANT: For some reason, client <ID> <something not in matched> error handling is not working, TBF
+                    } else {
+                        std::cout << "Unknown action: " << action << "\nType 'help client' for usage\n"; // Handle unknown action
+                    }
+                } else {
+                    std::cout << "Client with ID " << id << " not found\nType 'help client' for usage\n"; // Handle client not found
+                }
+            } else if (re2::RE2::FullMatch(command, "client\\s[a-zA-Z0-9]{8}")) {
+                std::cout << "Missing action\nType 'help client' for usage\n"; // Handle missing action
+            } else if (re2::RE2::FullMatch(command, "client")) {
+                std::cout << "Missing arguments\nType 'help client' for usage\n"; // Handle missing ID and action
+            } else if (re2::RE2::FullMatch(command, "client\\s(?:[a-zA-Z0-9]){1,7}")) {
+                std::cout << "ID too short\nType 'help client' for usage\n"; // Handle missing ID and action
+            } else if (re2::RE2::FullMatch(command, "client\\s(?:[a-zA-Z0-9]){9,}")) {
+                std::cout << "ID too long\nType 'help client' for usage\n"; // Handle missing ID and action
+            } else if (re2::RE2::FullMatch(command, "client\\s(?:[a-zA-Z0-9]){9,}")) {
+                std::cout << "ID too long\nType 'help client' for usage\n"; // Handle missing ID and action
+            } else {
+                std::cout << "Unknown error, please report the issue. Type 'help issue' for information.\nType 'help client' for usage\n"; // Handle unknown error in command parsing
+            }
+
+            // help command
+
+        } else if (re2::RE2::FullMatch(command, "help(?:\\s\\S*)?")) {
+            std::cout << "Not implemented yet\n"; // Placeholder for help command
         }
     }
 }
+
 
 int main() {
     try {

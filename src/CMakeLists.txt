@@ -1,5 +1,7 @@
 # Initial setup
 cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(Komi)
 
@@ -9,6 +11,7 @@ find_package(cpprestsdk CONFIG REQUIRED)
 # Find Server Packages
 find_package(boost_asio REQUIRED CONFIG)
 find_package(boost_beast REQUIRED CONFIG)
+find_package(re2 CONFIG REQUIRED)
 
 # Add executables
 add_executable(KomiClient client.cpp)
@@ -20,3 +23,4 @@ target_link_libraries(KomiClient PRIVATE cpprestsdk::cpprest cpprestsdk::cpprest
 # Link Server Libraries
 target_link_libraries(KomiServer PRIVATE Boost::asio)
 target_link_libraries(KomiServer PRIVATE Boost::beast)
+target_link_libraries(KomiServer PRIVATE re2::re2)

@@ -2,6 +2,7 @@
   "dependencies": [
     "cpprestsdk",
     "boost-beast",
-    "boost-asio"
+    "boost-asio",
+    "re2"
   ]
 }
