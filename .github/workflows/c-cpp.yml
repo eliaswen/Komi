@@ -16,8 +16,11 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: ${{ github.workspace }}\src\vcpkg
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
       - name: Run CMake
         uses: lukka/run-cmake@v10.8
         with:
           cmakeListsTxtPath: '${{ github.workspace }}\src\CMakeLists.txt'
+          configurePreset: 'ninja-multi-vcpkg'
 
