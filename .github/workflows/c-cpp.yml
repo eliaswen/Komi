@@ -8,16 +8,11 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: Setup with VCPKG
+        uses: lukka/run-vcpkg@v7.6
+      - name: Run CMake
+        uses: lukka/run-cmake@v10.8
