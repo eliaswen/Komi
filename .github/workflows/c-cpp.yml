@@ -16,8 +16,7 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: ${{ github.workspace }}\src\vcpkg
-      - name: Get CMake
-        uses: lukka/get-cmake@latest
+          runVcpkgInstall: true
       - name: Run CMake
         uses: lukka/run-cmake@v10.8
         with:
