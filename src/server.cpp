@@ -78,6 +78,7 @@ void handle_request(http::request<http::string_body> const& req, http::response<
         } while (clients.find(id) != clients.end());
 
         {
+            // Lock the clients map to ensure thread safety
             std::lock_guard<std::mutex> lock(clients_mutex);
             clients[id] = {client_ip, std::chrono::steady_clock::now()};
         }
